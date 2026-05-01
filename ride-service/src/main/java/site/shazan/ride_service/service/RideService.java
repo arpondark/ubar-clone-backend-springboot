@@ -83,7 +83,7 @@ public class RideService {
 
     }
 
-    public void updateRideStatus(String rideId, RideStatus driverId) {
+    public void updateRideStatus(String rideId, String driverId) {
         Ride ride =rideRepository.findById(rideId)
                 .orElseThrow(()->new RuntimeException("Ride not found with id: "+rideId));
         ride.setDriverId(driverId);
@@ -93,7 +93,7 @@ public class RideService {
 
     private double calculatedEstimatedFare(RideRequest request) {
         double lat1 = Math.toRadians(request.getPickupLatitude());
-        double lat2 = Math.toRadians(request.getDropoffLatitude()));
+        double lat2 = Math.toRadians(request.getDropoffLatitude());
 
         double lon1 = Math.toRadians(request.getPickupLongitude());
         double lon2 = Math.toRadians(request.getDropoffLongitude());
@@ -150,13 +150,14 @@ public class RideService {
                 .orElseThrow(()->new RuntimeException("Ride not found with id: "+rideId));
         ride.setStatus(RideStatus.CANCELLED);
         rideRepository.save(ride);
+        return mapToRespose(ride);
     }
 
     public RideResponse completedRide(String rideId) {
         Ride ride= rideRepository.findById(rideId)
                 .orElseThrow(()->new RuntimeException("Ride not found with id: "+rideId));
         if(ride.getStatus() != RideStatus.RIDE_STARTED){
-            throw new RuntimeException("Ride is not completed yet. status {}",ride.getStatus());
+            throw new RuntimeException(String.format("Ride is not completed yet. status %s", ride.getStatus()));
         }
         ride.setStatus(RideStatus.COMPLETED);
         ride.setCompletedAt(LocalDateTime.now());
