@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,12 +32,17 @@ public class Ride {
     private double dropoffLatitude;
     private double dropoffLontitude;
     private String dropoffAddress;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private RideStatus status;
 
     private double estimatedFare;
     private double actualFare;
+    @CreationTimestamp
     private LocalDateTime createdAt;
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
+
     private LocalDateTime startedAt;
     private LocalDateTime completedAt;
 
