@@ -1,0 +1,244 @@
+{
+  "info": {
+    "name": "Uber Clone Backend API",
+    "description": "Complete API collection for testing the Uber Clone backend services including Location Service, Ride Service, and Matching Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Location Service",
+      "item": [
+        {
+          "name": "Update Driver Location",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"driverId\": \"driver-001\",\n  \"lattitude\": 40.7128,\n  \"longitude\": -74.0060\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8082/api/v1/locations/drivers/update",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8082",
+              "path": [
+                "api",
+                "v1",
+                "locations",
+                "drivers",
+                "update"
+              ]
+            },
+            "description": "Update a driver's current location in Redis cache"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Nearby Drivers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8082/api/v1/locations/drivers/nearby?lattitude=40.7128&longitude=-74.0060&radius=5.0",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8082",
+              "path": [
+                "api",
+                "v1",
+                "locations",
+                "drivers",
+                "nearby"
+              ],
+              "query": [
+                {
+                  "key": "lattitude",
+                  "value": "40.7128"
+                },
+                {
+                  "key": "longitude",
+                  "value": "-74.0060"
+                },
+                {
+                  "key": "radius",
+                  "value": "5.0"
+                }
+              ]
+            },
+            "description": "Get all drivers within a specified radius from coordinates"
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Driver",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8082/api/v1/locations/drivers/driver-001",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8082",
+              "path": [
+                "api",
+                "v1",
+                "locations",
+                "drivers",
+                "driver-001"
+              ]
+            },
+            "description": "Remove a driver from the location tracking system"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Ride Service",
+      "item": [
+        {
+          "name": "Request Ride",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"riderId\": \"rider-001\",\n  \"pickupLatitude\": 40.7128,\n  \"pickupLongitude\": -74.0060,\n  \"pickupAddress\": \"123 Main St, New York, NY\",\n  \"dropoffLatitude\": 40.7580,\n  \"dropoffLongitude\": -73.9855,\n  \"dropoffAddress\": \"Empire State Building, New York, NY\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8083/api/v1/rides/request",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "api",
+                "v1",
+                "rides",
+                "request"
+              ]
+            },
+            "description": "Create a new ride request. This triggers the matching logic via Kafka"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Ride by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/v1/rides/ride-uuid-123",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "api",
+                "v1",
+                "rides",
+                "ride-uuid-123"
+              ]
+            },
+            "description": "Retrieve details of a specific ride by its ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Rides for Rider",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/v1/rides/rider/rider-001",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "api",
+                "v1",
+                "rides",
+                "rider",
+                "rider-001"
+              ]
+            },
+            "description": "Get all rides for a specific rider"
+          },
+          "response": []
+        },
+        {
+          "name": "Start Ride",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/v1/rides/ride-uuid-123/start",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "api",
+                "v1",
+                "rides",
+                "ride-uuid-123",
+                "start"
+              ]
+            },
+            "description": "Start an accepted ride"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Matching Service",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8084/actuator/health",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8084",
+              "path": [
+                "actuator",
+                "health"
+              ]
+            },
+            "description": "Check if Matching Service is running"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
+
