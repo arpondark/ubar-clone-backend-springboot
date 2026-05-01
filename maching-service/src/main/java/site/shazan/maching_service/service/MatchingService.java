@@ -6,6 +6,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import site.shazan.maching_service.client.LocationServiceCLient;
 import site.shazan.maching_service.dtos.NearByDriverResponse;
+import site.shazan.maching_service.event.RIdeRequestedEvent;
 import site.shazan.maching_service.event.RideMachedEvent;
 
 import java.util.Comparator;
@@ -21,19 +22,19 @@ public class MatchingService {
 
     private static final String RIDE_MATCHING_TOPIC = "ride-mached";
 
-    private static double DEFAULT_SEARCH_RADIOUS_KM = 5.0;
+    private static final double DEFAULT_SEARCH_RADIOUS_KM = 5.0;
 
     /*
     * main matching logic
     * */
 
-    public void matchDriverForRide(RideMachedEvent event) {
+    public void matchDriverForRide(RIdeRequestedEvent event) {
         log.info("Matching driver for ride: {}", event.getRideId());
 
         //1. find nearby drivers using location service
         List<NearByDriverResponse>nearbyDrivers = locationServiceCLient.getNearByDrivers(
-                event.getPicakupLatitude(),
-                event.getPickupLontitude(),
+                event.getPickupLatitude(),
+                event.getPickupLongitude(),
                 DEFAULT_SEARCH_RADIOUS_KM
         );
 
@@ -68,7 +69,7 @@ public class MatchingService {
         double ratingWeight =0.3;
         return nearbyDrivers.stream().
                 max(Comparator.comparingDouble(nearbyDriver-> {
-                    double distanceScore = 1.0 / (nearbyDrivers.getFirst().getDistanceInKm() + 0.1);
+                    double distanceScore = 1.0 / (nearbyDriver.getDistanceInKm() + 0.1);
 
                     double simulatedRating = 4.0+Math.random();
 
