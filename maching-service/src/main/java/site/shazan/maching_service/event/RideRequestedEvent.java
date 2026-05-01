@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RIdeRequestedEvent {
+public class RideRequestedEvent {
     private String riderId;
     private String rideId;
     private double pickupLatitude;

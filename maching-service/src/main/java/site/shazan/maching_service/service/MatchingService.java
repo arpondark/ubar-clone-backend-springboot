@@ -6,8 +6,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import site.shazan.maching_service.client.LocationServiceCLient;
 import site.shazan.maching_service.dtos.NearByDriverResponse;
-import site.shazan.maching_service.event.RIdeRequestedEvent;
 import site.shazan.maching_service.event.RideMachedEvent;
+import site.shazan.maching_service.event.RideRequestedEvent;
 
 import java.util.Comparator;
 import java.util.List;
@@ -26,7 +26,7 @@ public class MatchingService {
      * main matching logic
      * */
 
-    public void matchDriverForRide(RIdeRequestedEvent event) {
+    public void matchDriverForRide(RideRequestedEvent event) {
         log.info("Matching driver for ride: {}", event.getRideId());
 
         //1. find nearby drivers using location service
