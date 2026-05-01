@@ -24,7 +24,7 @@ public class LocationController {
     }
 
     @GetMapping("/drivers/nearby")
-    public ResponseEntity<List<NearByDriverResponse>> getNearbyDriverLocation(@RequestParam double lattitude, @RequestParam double longitude, @RequestParam(defaultValue = "5.0") double radius) {
+    public ResponseEntity<List<NearByDriverResponse>> getNearbyDriver(@RequestParam double lattitude, @RequestParam double longitude, @RequestParam double radius) {
         return ResponseEntity.ok(locationService.findNearByDrivers(lattitude, longitude, radius));
     }
 
@@ -36,6 +36,6 @@ public class LocationController {
 
 }
 /*
-* all is in redis cache not in real database
+* all is in redis cache
 *
 * */
