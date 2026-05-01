@@ -17,22 +17,20 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class MatchingService {
+    private static final String RIDE_MATCHING_TOPIC = "ride-mached";
+    private static final double DEFAULT_SEARCH_RADIOUS_KM = 5.0;
     private final LocationServiceCLient locationServiceCLient;
     private final KafkaTemplate<String, RideMachedEvent> kafkaTemplate;
 
-    private static final String RIDE_MATCHING_TOPIC = "ride-mached";
-
-    private static final double DEFAULT_SEARCH_RADIOUS_KM = 5.0;
-
     /*
-    * main matching logic
-    * */
+     * main matching logic
+     * */
 
     public void matchDriverForRide(RIdeRequestedEvent event) {
         log.info("Matching driver for ride: {}", event.getRideId());
 
         //1. find nearby drivers using location service
-        List<NearByDriverResponse>nearbyDrivers = locationServiceCLient.getNearByDrivers(
+        List<NearByDriverResponse> nearbyDrivers = locationServiceCLient.getNearByDrivers(
                 event.getPickupLatitude(),
                 event.getPickupLongitude(),
                 DEFAULT_SEARCH_RADIOUS_KM
@@ -43,11 +41,11 @@ public class MatchingService {
             return;
         }
         Optional<NearByDriverResponse> bestDriver = findBestDriver(nearbyDrivers);
-        if(bestDriver.isEmpty()){
+        if (bestDriver.isEmpty()) {
             log.info("No suitable driver found for ride");
             return;
         }
-        NearByDriverResponse assignedDriver= bestDriver.get();
+        NearByDriverResponse assignedDriver = bestDriver.get();
 
         RideMachedEvent matchedEvent = new RideMachedEvent(
                 event.getRiderId(),
@@ -61,19 +59,18 @@ public class MatchingService {
         log.info("Ride matched for driver: {}", assignedDriver.getDriverId());
 
 
-
     }
 
     private Optional<NearByDriverResponse> findBestDriver(List<NearByDriverResponse> nearbyDrivers) {
         double distanceWeight = 0.7;
-        double ratingWeight =0.3;
+        double ratingWeight = 0.3;
         return nearbyDrivers.stream().
-                max(Comparator.comparingDouble(nearbyDriver-> {
+                max(Comparator.comparingDouble(nearbyDriver -> {
                     double distanceScore = 1.0 / (nearbyDriver.getDistanceInKm() + 0.1);
 
-                    double simulatedRating = 4.0+Math.random();
+                    double simulatedRating = 4.0 + Math.random();
 
-                    return (distanceScore* distanceWeight) +(simulatedRating*ratingWeight);
+                    return (distanceScore * distanceWeight) + (simulatedRating * ratingWeight);
 
                 }));
     }
